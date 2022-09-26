@@ -2,6 +2,7 @@ package co.com.harcalejo.loanapi.service;
 
 import co.com.harcalejo.loanapi.dto.RequestLoanPayloadDTO;
 import co.com.harcalejo.loanapi.dto.RequestLoanResponseDTO;
+import co.com.harcalejo.loanapi.exception.UserException;
 
 /**
  * La interface {@code LoanService} es el componente encagado de definir las
@@ -21,5 +22,5 @@ public interface LoanService {
      * @return retorna el identifador del préstamo y la cuota mensual.
      */
     RequestLoanResponseDTO requestLoan(
-            RequestLoanPayloadDTO requestLoanPayloadDTO);
+            RequestLoanPayloadDTO requestLoanPayloadDTO) throws UserException;
 }
