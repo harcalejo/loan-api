@@ -21,7 +21,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class RequestLoanPayloadDTO {
+public class RequestLoanPayloadDTO extends GenericDTO <Loan> {
     /**
      * Monto del préstamo
      */
@@ -36,4 +36,14 @@ public class RequestLoanPayloadDTO {
      * Identificador único del usuario
      */
     private Long userId;
+
+    @Override
+    public Loan toEntity() {
+        Loan loan = new Loan();
+
+        loan.setAmount(this.amount);
+        loan.setTerm(this.term);
+
+        return loan;
+    }
 }

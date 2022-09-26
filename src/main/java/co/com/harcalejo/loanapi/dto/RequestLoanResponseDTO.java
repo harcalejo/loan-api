@@ -1,5 +1,6 @@
 package co.com.harcalejo.loanapi.dto;
 
+import co.com.harcalejo.loanapi.entity.Loan;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,5 +31,16 @@ public class RequestLoanResponseDTO {
     /**
      * Cuota mensual del préstamo
      */
-    private int installment;
+    private double installment;
+
+    /**
+     * Constructor que permite generar nuestro DTO apartir de la entidad
+     * {@link Loan}
+     * @param loan entidad Préstamo
+     */
+    public RequestLoanResponseDTO(Loan loan) {
+        this.loanId = loan.getId();
+        this.installment = loan.getInstallment();
+    }
+
 }
