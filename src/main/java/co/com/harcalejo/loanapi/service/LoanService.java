@@ -5,9 +5,9 @@ import co.com.harcalejo.loanapi.dto.RequestLoanResponseDTO;
 import co.com.harcalejo.loanapi.exception.UserException;
 
 /**
- * La interface {@code LoanService} es el componente encagado de definir las
- * capacidades en la capa de negocio que suplirá nuestra API. De esta forma,
- * buscamos que sólo se maneje lógica especializada de Préstamos.
+ * La interface {@code LoanService} es el componente encargado de definir las
+ * capacidades del servicio de Préstamos. De esta forma, buscamos que sólo se
+ * maneje lógica especializada de Préstamos.
  *
  * @author Hugo Alejandro Rodriguez
  * @version 1.0.0
@@ -23,4 +23,5 @@ public interface LoanService {
      */
     RequestLoanResponseDTO requestLoan(
             RequestLoanPayloadDTO requestLoanPayloadDTO) throws UserException;
+
 }

@@ -6,10 +6,7 @@ import co.com.harcalejo.loanapi.entity.Loan;
 import co.com.harcalejo.loanapi.entity.User;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.repository.LoanRepository;
-import co.com.harcalejo.loanapi.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 /**
  * La clase {@code LoanServiceImpl} es la implementación de la interfaz
@@ -25,25 +22,24 @@ import java.util.Optional;
 public class LoanServiceImpl implements LoanService {
 
     /**
-     * Objeto para interactuar con la base de datos de la entidad de Usuario
-     */
-    private final UserRepository userRepository;
-
-    /**
-     * Objeto para interactuar con la base de datos de la entidad de Préstamo
+     * Bean para interactuar con la base de datos de la entidad de Préstamo
      */
     private final LoanRepository loanRepository;
 
     /**
+     * Bean para acceder a las capacidades del servicio de Usuario
+     */
+    private final UserService userService;
+
+    /**
      * Constructor de la clase de implementación del servicio de Préstamos.
      *
-     * @param userRepository dependencia del repositorio de Usuario
      * @param loanRepository dependencia del repositorio de Préstamo
+     * @param userService dependencia del servicio de Usuarios
      */
-    public LoanServiceImpl(UserRepository userRepository,
-                           LoanRepository loanRepository) {
-        this.userRepository = userRepository;
+    public LoanServiceImpl(LoanRepository loanRepository, UserService userService) {
         this.loanRepository = loanRepository;
+        this.userService = userService;
     }
 
 
@@ -51,7 +47,7 @@ public class LoanServiceImpl implements LoanService {
     public RequestLoanResponseDTO requestLoan(
             RequestLoanPayloadDTO requestLoanPayloadDTO) throws UserException {
 
-        User user = queryUserOwner(requestLoanPayloadDTO.getUserId());
+        User user = userService.getUser(requestLoanPayloadDTO.getUserId());
         Loan loanFromPayload = requestLoanPayloadDTO.toEntity();
         loanFromPayload.setUser(user);
 
@@ -59,22 +55,4 @@ public class LoanServiceImpl implements LoanService {
 
         return new RequestLoanResponseDTO(loanFromSave);
     }
-
-    /**
-     * Método encargado de realizar la consulta del usuario usando el repositorio
-     * {@link UserRepository}
-     *
-     * @param userId identificador único del usuario
-     * @return retorna la entidad del Usuario {@link User}
-     * @throws UserException se genera si el userId no corresponde a un Usuario
-     */
-    private User queryUserOwner(Long userId) throws UserException {
-        Optional<User> user = userRepository.findById(userId);
-        user.orElseThrow(() -> new UserException(
-                "El usuario con Id " + userId + ", no existe"));
-
-        return user.get();
-    }
-
-
 }
