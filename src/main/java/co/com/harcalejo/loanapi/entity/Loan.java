@@ -80,6 +80,6 @@ public class Loan {
      * identificador de único del Usuario.
      */
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_loan", referencedColumnName = "id")
     private User user;
 }

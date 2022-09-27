@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * La clase {@code User} nos permite representar la entidad de negocio Usuario
@@ -36,6 +33,7 @@ import javax.persistence.ManyToOne;
  * @version 1.0.0
  */
 @Entity
+@Table(name = "USER_TABLE")
 @NoArgsConstructor
 @Setter
 @Getter
@@ -62,6 +60,6 @@ public class User {
      * identificador de único del Target.
      */
     @ManyToOne
-    @JoinColumn(name = "target_id")
+    @JoinColumn(name = "target", referencedColumnName = "id")
     private Target target;
 }
