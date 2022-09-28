@@ -1,6 +1,8 @@
 package co.com.harcalejo.loanapi.dto;
 
 import co.com.harcalejo.loanapi.entity.Loan;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +22,8 @@ import lombok.Setter;
  * @author Hugo Alejandro Rodriguez
  * @version 1.0.0
  */
+
+@Data
 @Setter
 @Getter
 public class RequestLoanResponseDTO {

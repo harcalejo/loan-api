@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CalculationServiceImpl implements CalculationService{
 
+    private static final double ROUND_DOUBLE_CONSTANT = 100.0;
+
     private final LoanProperties loanProperties;
 
     public CalculationServiceImpl(LoanProperties loanProperties) {
@@ -29,7 +31,10 @@ public class CalculationServiceImpl implements CalculationService{
         final double r = loanProperties.loadUserTargetProperties(userTarget)
                 .getRate() / LoanProperties.MONTHS;
 
-        return (r + r / (Math.pow(1 + r, loan.getTerm() - 1))) * loan.getAmount();
+        return Math.round(
+                ((r + r / (Math.pow(1 + r, loan.getTerm() - 1)))
+                        * loan.getAmount())
+                        * ROUND_DOUBLE_CONSTANT)/ROUND_DOUBLE_CONSTANT;
     }
 
 }
