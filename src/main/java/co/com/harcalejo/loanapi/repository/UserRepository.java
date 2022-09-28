@@ -1,6 +1,5 @@
 package co.com.harcalejo.loanapi.repository;
 
-import co.com.harcalejo.loanapi.entity.Loan;
 import co.com.harcalejo.loanapi.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -31,6 +30,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * Permite consultar un Usuario
+     *
      * @param id identificador único del Usuario
      * @return retorna el usuario correspondiente. Usamos la clase {@link Optional}
      * para controlar los casos donde el identificador del Usuario no corresponde

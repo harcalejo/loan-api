@@ -2,13 +2,11 @@ package co.com.harcalejo.loanapi.service;
 
 import co.com.harcalejo.loanapi.dto.RequestLoanPayloadDTO;
 import co.com.harcalejo.loanapi.dto.RequestLoanResponseDTO;
-import co.com.harcalejo.loanapi.dto.UserTargetDTO;
 import co.com.harcalejo.loanapi.entity.Loan;
 import co.com.harcalejo.loanapi.entity.User;
 import co.com.harcalejo.loanapi.exception.RuleException;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.repository.LoanRepository;
-import co.com.harcalejo.loanapi.rule.TargetUserRule;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,51 +36,37 @@ public class LoanServiceImpl implements LoanService {
     private final UserService userService;
 
     /**
+     * Bean para acceder a las capacidades del servicio de cálculos
+     */
+    private final CalculationService calculationService;
+
+    /**
      * Constructor de la clase de implementación del servicio de Préstamos.
      *
-     * @param loanRepository dependencia del repositorio de Préstamo
-     * @param userService dependencia del servicio de Usuarios
+     * @param loanRepository     dependencia del repositorio de Préstamo
+     * @param userService        dependencia del servicio de Usuarios
+     * @param calculationService dependecia del servicio de Cálculos
      */
-    public LoanServiceImpl(LoanRepository loanRepository, UserService userService) {
+    public LoanServiceImpl(LoanRepository loanRepository, UserService userService, CalculationService calculationService) {
         this.loanRepository = loanRepository;
         this.userService = userService;
+        this.calculationService = calculationService;
     }
 
     @Override
     public RequestLoanResponseDTO requestLoan(
-            RequestLoanPayloadDTO requestLoanPayloadDTO) throws UserException, RuleException {
+            RequestLoanPayloadDTO requestLoanPayloadDTO) throws UserException {
 
         User user = userService.getUser(requestLoanPayloadDTO.getUserId());
         Loan loanFromPayload = requestLoanPayloadDTO.toEntity();
         loanFromPayload.setUser(user);
         loanFromPayload.setCreationDate(LocalDate.now());
-        loanFromPayload.setInstallment(calculateInstallment(loanFromPayload));
+        loanFromPayload.setInstallment(calculationService
+                .calculateLoanInstallment(loanFromPayload));
 
         Loan loanFromSave = loanRepository.save(loanFromPayload);
 
         return new RequestLoanResponseDTO(loanFromSave);
-    }
-
-    private double calculateInstallment(Loan loan) throws RuleException {
-        List<Loan> loans =
-                getLoansFromLastYear(loan.getUser());
-        long loansLastYear = loans
-                .size();
-        loan.setLoanCount(loansLastYear);
-
-        double totalAmount = loans
-                .stream()
-                .mapToDouble(Loan::getAmount)
-                .sum();
-
-        loan.setTotalAmount(totalAmount);
-
-        TargetUserRule rule = new TargetUserRule();
-        UserTargetDTO userTargetDTO = rule.executeRule(loan);
-
-        double r = userTargetDTO.getRate();
-
-        return (r + r / (Math.pow(1 + r, loan.getTerm() - 1))) * loan.getAmount();
     }
 
     /**
