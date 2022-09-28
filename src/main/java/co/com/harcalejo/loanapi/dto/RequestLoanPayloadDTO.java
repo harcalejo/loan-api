@@ -1,7 +1,9 @@
 package co.com.harcalejo.loanapi.dto;
 
 import co.com.harcalejo.loanapi.entity.Loan;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -19,6 +21,8 @@ import lombok.Setter;
  * @author Hugo Alejandro Rodriguez
  * @version 1.0.0
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 public class RequestLoanPayloadDTO extends GenericDTO <Loan> {

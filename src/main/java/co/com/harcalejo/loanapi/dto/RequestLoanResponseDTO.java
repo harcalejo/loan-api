@@ -1,10 +1,7 @@
 package co.com.harcalejo.loanapi.dto;
 
 import co.com.harcalejo.loanapi.entity.Loan;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * La clase {@code RequestLoanResponseDTO} nos permite definir los atributos de la
@@ -23,6 +20,8 @@ import lombok.Setter;
  * @version 1.0.0
  */
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Setter
 @Getter
