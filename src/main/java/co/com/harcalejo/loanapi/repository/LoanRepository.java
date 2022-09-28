@@ -26,5 +26,6 @@ import java.util.List;
  */
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Long> {
-    List<Loan> findByCreationDateBetween(LocalDate start, LocalDate end);
+    List<Loan> findByIdAndCreationDateBetween(Long id,
+            LocalDate start, LocalDate end);
 }

@@ -64,7 +64,8 @@ public class LoanServiceImpl implements LoanService {
     }
 
     private double calculateInstallment(Loan loan) throws RuleException {
-        List<Loan> loans = getLoansFromLastYear();
+        List<Loan> loans =
+                getLoansFromLastYear(loan.getUser());
         long loansLastYear = loans
                 .size();
         loan.setLoanCount(loansLastYear);
@@ -84,12 +85,17 @@ public class LoanServiceImpl implements LoanService {
         return (r + r / (Math.pow(1 + r, loan.getTerm() - 1))) * loan.getAmount();
     }
 
-    private List<Loan> getLoansFromLastYear() {
+    /**
+     * Consulta los préstamos solicitados el último año por el usuario
+     *
+     * @return Listado de préstamos
+     */
+    private List<Loan> getLoansFromLastYear(User user) {
         LocalDate currentDate = LocalDate.now();
         LocalDate lastYear = currentDate.minusYears(1);
 
         return loanRepository
-                .findByCreationDateBetween(currentDate, lastYear);
+                .findByIdAndCreationDateBetween(user.getId(), currentDate, lastYear);
 
     }
 
