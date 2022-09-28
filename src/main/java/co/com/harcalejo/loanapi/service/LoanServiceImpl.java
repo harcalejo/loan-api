@@ -2,9 +2,10 @@ package co.com.harcalejo.loanapi.service;
 
 import co.com.harcalejo.loanapi.dto.RequestLoanPayloadDTO;
 import co.com.harcalejo.loanapi.dto.RequestLoanResponseDTO;
+import co.com.harcalejo.loanapi.dto.UserTargetDTO;
 import co.com.harcalejo.loanapi.entity.Loan;
+import co.com.harcalejo.loanapi.entity.LoanProperties;
 import co.com.harcalejo.loanapi.entity.User;
-import co.com.harcalejo.loanapi.exception.RuleException;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.repository.LoanRepository;
 import org.springframework.stereotype.Service;
@@ -41,32 +42,57 @@ public class LoanServiceImpl implements LoanService {
     private final CalculationService calculationService;
 
     /**
+     * Bean para el manejo de properties de la API
+     */
+    private final LoanProperties loanProperties;
+
+    /**
      * Constructor de la clase de implementación del servicio de Préstamos.
      *
      * @param loanRepository     dependencia del repositorio de Préstamo
      * @param userService        dependencia del servicio de Usuarios
      * @param calculationService dependecia del servicio de Cálculos
+     * @param loanProperties depedencia del bean de properties
      */
-    public LoanServiceImpl(LoanRepository loanRepository, UserService userService, CalculationService calculationService) {
+    public LoanServiceImpl(LoanRepository loanRepository, UserService userService, CalculationService calculationService, LoanProperties loanProperties) {
         this.loanRepository = loanRepository;
         this.userService = userService;
         this.calculationService = calculationService;
+        this.loanProperties = loanProperties;
     }
 
     @Override
     public RequestLoanResponseDTO requestLoan(
             RequestLoanPayloadDTO requestLoanPayloadDTO) throws UserException {
 
-        User user = userService.getUser(requestLoanPayloadDTO.getUserId());
+        final User user = userService
+                .getUser(requestLoanPayloadDTO.getUserId());
+        final UserTargetDTO userTargetDTO =
+                loanProperties
+                        .loadUserTargetProperties(
+                                user.getTarget().getId());
+
+        if(isAmountGreaterThanMaxAmount(
+                requestLoanPayloadDTO, userTargetDTO)) {
+            throw new UserException("El usuario supera el monto permitido");
+        }
+
         Loan loanFromPayload = requestLoanPayloadDTO.toEntity();
         loanFromPayload.setUser(user);
         loanFromPayload.setCreationDate(LocalDate.now());
-        loanFromPayload.setInstallment(calculationService
-                .calculateLoanInstallment(loanFromPayload));
+        loanFromPayload.setInstallment(
+                calculationService
+                        .calculateLoanInstallment(loanFromPayload));
 
         Loan loanFromSave = loanRepository.save(loanFromPayload);
 
         return new RequestLoanResponseDTO(loanFromSave);
+    }
+
+    private boolean isAmountGreaterThanMaxAmount(
+            RequestLoanPayloadDTO requestLoanPayloadDTO, UserTargetDTO userTargetDTO) {
+        return userTargetDTO.getMaxAmount() <
+                requestLoanPayloadDTO.getAmount();
     }
 
     /**
@@ -82,6 +108,5 @@ public class LoanServiceImpl implements LoanService {
                 .findByIdAndCreationDateBetween(user.getId(), currentDate, lastYear);
 
     }
-
 
 }
