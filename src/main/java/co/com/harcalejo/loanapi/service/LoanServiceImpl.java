@@ -63,7 +63,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public RequestLoanResponseDTO requestLoan(
-            RequestLoanPayloadDTO requestLoanPayloadDTO) throws UserException {
+            RequestLoanPayloadDTO requestLoanPayloadDTO) {
 
         final User user = userService
                 .getUser(requestLoanPayloadDTO.getUserId());

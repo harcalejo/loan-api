@@ -23,6 +23,6 @@ public interface LoanService {
      * @return retorna el identifador del préstamo y la cuota mensual.
      */
     RequestLoanResponseDTO requestLoan(
-            RequestLoanPayloadDTO requestLoanPayloadDTO) throws UserException, RuleException;
+            RequestLoanPayloadDTO requestLoanPayloadDTO) throws UserException;
 
 }
