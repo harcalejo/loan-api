@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  * La clase {@code Loan} nos permite representar la entidad de negocio Préstamo
@@ -65,7 +66,7 @@ public class Loan {
     /**
      * Fecha de creación del prestamo.
      */
-    private Date date;
+    private LocalDate creationDate;
 
     /**
      * Usuario beneficiario del préstamo
@@ -82,4 +83,16 @@ public class Loan {
     @ManyToOne
     @JoinColumn(name = "user_loan", referencedColumnName = "id")
     private User user;
+
+    /**
+     * Cantidad de prestamos solicitados
+     */
+    @Transient
+    private long loanCount;
+
+    /**
+     * Volumen total de prestamos pedidos el último año
+     */
+    @Transient
+    private double totalAmount;
 }

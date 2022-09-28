@@ -2,6 +2,7 @@ package co.com.harcalejo.loanapi.controller;
 
 import co.com.harcalejo.loanapi.dto.RequestLoanPayloadDTO;
 import co.com.harcalejo.loanapi.dto.RequestLoanResponseDTO;
+import co.com.harcalejo.loanapi.exception.RuleException;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.service.LoanService;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class LoanController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public RequestLoanResponseDTO requestLoan(
-            @RequestBody RequestLoanPayloadDTO requestLoanPayloadDTO) throws UserException {
+            @RequestBody RequestLoanPayloadDTO requestLoanPayloadDTO) throws UserException, RuleException {
         return loanService.requestLoan(requestLoanPayloadDTO);
     }
 

@@ -4,6 +4,10 @@ import co.com.harcalejo.loanapi.entity.Loan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
+
 /**
  * La interface {@code LoanRepository} es el componente encagado del acceso a los
  * datos de nuestra API. Permitiendonos guardar, modificar, eliminar y consultar
@@ -22,5 +26,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Long> {
-
+    List<Loan> findByCreationDateBetween(LocalDate start, LocalDate end);
 }
