@@ -83,16 +83,4 @@ public class Loan {
     @ManyToOne
     @JoinColumn(name = "user_loan", referencedColumnName = "id")
     private User user;
-
-    /**
-     * Cantidad de prestamos solicitados
-     */
-    @Transient
-    private long loanCount;
-
-    /**
-     * Volumen total de prestamos pedidos el último año
-     */
-    @Transient
-    private double totalAmount;
 }

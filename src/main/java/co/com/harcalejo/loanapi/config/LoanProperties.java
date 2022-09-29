@@ -13,7 +13,7 @@ import org.springframework.context.annotation.PropertySource;
  * @version 1.0.0
  */
 @Configuration
-@PropertySource("loan.properties")
+@PropertySource("classpath:loan.properties")
 @Getter
 public class LoanProperties {
 
