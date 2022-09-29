@@ -25,7 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class RequestLoanPayloadDTO extends GenericDTO <Loan> {
+public class CreateLoanRequestDTO {
     /**
      * Monto del préstamo
      */
@@ -41,7 +41,11 @@ public class RequestLoanPayloadDTO extends GenericDTO <Loan> {
      */
     private Long userId;
 
-    @Override
+    /**
+     * Transforma el DTO en un objeto de la entidad base {@link Loan}
+     *
+     * @return un objeto del tipo Prestamo
+     */
     public Loan toEntity() {
         Loan loan = new Loan();
 

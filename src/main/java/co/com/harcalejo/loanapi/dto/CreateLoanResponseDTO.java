@@ -25,7 +25,7 @@ import lombok.*;
 @Data
 @Setter
 @Getter
-public class RequestLoanResponseDTO {
+public class CreateLoanResponseDTO {
     /**
      * Identificador único del prestamo
      */
@@ -41,7 +41,7 @@ public class RequestLoanResponseDTO {
      * {@link Loan}
      * @param loan entidad Préstamo
      */
-    public RequestLoanResponseDTO(Loan loan) {
+    public CreateLoanResponseDTO(Loan loan) {
         this.loanId = loan.getId();
         this.installment = loan.getInstallment();
     }

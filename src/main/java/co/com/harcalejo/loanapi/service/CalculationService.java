@@ -11,5 +11,12 @@ import co.com.harcalejo.loanapi.entity.Loan;
  */
 public interface CalculationService {
 
+    /**
+     * Realiza el calculo de la cuota del prestamo solicitado por el usuario,
+     * teniendo en cuenta las reglas y los parametros del negocio.
+     *
+     * @param loan prestamo que se esta solicitando
+     * @return el valor de la cuota calculado
+     */
     double calculateLoanInstallment(Loan loan);
 }

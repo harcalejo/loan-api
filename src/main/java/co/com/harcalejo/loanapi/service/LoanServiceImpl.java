@@ -1,10 +1,9 @@
 package co.com.harcalejo.loanapi.service;
 
-import co.com.harcalejo.loanapi.dto.RequestLoanPayloadDTO;
-import co.com.harcalejo.loanapi.dto.RequestLoanResponseDTO;
+import co.com.harcalejo.loanapi.dto.CreateLoanRequestDTO;
+import co.com.harcalejo.loanapi.dto.CreateLoanResponseDTO;
 import co.com.harcalejo.loanapi.dto.UserTargetDTO;
 import co.com.harcalejo.loanapi.entity.Loan;
-import co.com.harcalejo.loanapi.entity.LoanProperties;
 import co.com.harcalejo.loanapi.entity.User;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.repository.LoanRepository;
@@ -42,57 +41,71 @@ public class LoanServiceImpl implements LoanService {
     private final CalculationService calculationService;
 
     /**
-     * Bean para el manejo de properties de la API
-     */
-    private final LoanProperties loanProperties;
-
-    /**
      * Constructor de la clase de implementación del servicio de Préstamos.
      *
      * @param loanRepository     dependencia del repositorio de Préstamo
      * @param userService        dependencia del servicio de Usuarios
      * @param calculationService dependecia del servicio de Cálculos
-     * @param loanProperties depedencia del bean de properties
      */
-    public LoanServiceImpl(LoanRepository loanRepository, UserService userService, CalculationService calculationService, LoanProperties loanProperties) {
+    public LoanServiceImpl(LoanRepository loanRepository, UserService userService, CalculationService calculationService) {
         this.loanRepository = loanRepository;
         this.userService = userService;
         this.calculationService = calculationService;
-        this.loanProperties = loanProperties;
     }
 
     @Override
-    public RequestLoanResponseDTO requestLoan(
-            RequestLoanPayloadDTO requestLoanPayloadDTO) {
+    public CreateLoanResponseDTO createLoan(
+            CreateLoanRequestDTO createLoanRequestDTO) {
 
         final User user = userService
-                .getUser(requestLoanPayloadDTO.getUserId());
+                .getUser(createLoanRequestDTO.getUserId());
         final UserTargetDTO userTargetDTO =
-                loanProperties
+                userService
                         .loadUserTargetProperties(
                                 user.getTarget().getId());
 
         if(isAmountGreaterThanMaxAmount(
-                requestLoanPayloadDTO, userTargetDTO)) {
+                createLoanRequestDTO, userTargetDTO)) {
             throw new UserException("El usuario supera el monto permitido");
         }
 
-        Loan loanFromPayload = requestLoanPayloadDTO.toEntity();
+        return new CreateLoanResponseDTO(
+                buildLoanForResponse(createLoanRequestDTO, user));
+    }
+
+    /**
+     * Complementa el objeto prestamo para ser retornado, usando los datos
+     * involucrados durante el proceso de creacion.
+     *
+     * @param createLoanRequestDTO valores de la solicitud recibidos
+     * @param user usuario asociado a la solicitud
+     * @return objeto Prestamo complementado
+     */
+    private Loan buildLoanForResponse(
+            CreateLoanRequestDTO createLoanRequestDTO, User user) {
+        Loan loanFromPayload = createLoanRequestDTO.toEntity();
         loanFromPayload.setUser(user);
         loanFromPayload.setCreationDate(LocalDate.now());
         loanFromPayload.setInstallment(
                 calculationService
                         .calculateLoanInstallment(loanFromPayload));
-
-        Loan loanFromSave = loanRepository.save(loanFromPayload);
-
-        return new RequestLoanResponseDTO(loanFromSave);
+        
+        return loanRepository.save(loanFromPayload);
     }
 
+    /**
+     * Compara si el monto solicitado es mayor al maximo permitido
+     *
+     * @param createLoanRequestDTO atributos enviados en la solicitud del prestamo
+     *                              entre ellos el monto solicitado
+     * @param userTargetDTO valores cargados de las properties de negocio, donde se
+     *                      define el valor maximo permitido
+     * @return si el monto solicitidado es superior al permitido
+     */
     private boolean isAmountGreaterThanMaxAmount(
-            RequestLoanPayloadDTO requestLoanPayloadDTO, UserTargetDTO userTargetDTO) {
+            CreateLoanRequestDTO createLoanRequestDTO, UserTargetDTO userTargetDTO) {
         return userTargetDTO.getMaxAmount() <
-                requestLoanPayloadDTO.getAmount();
+                createLoanRequestDTO.getAmount();
     }
 
     /**

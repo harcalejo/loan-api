@@ -1,12 +1,9 @@
 package co.com.harcalejo.loanapi.controller;
 
-import co.com.harcalejo.loanapi.dto.RequestLoanPayloadDTO;
-import co.com.harcalejo.loanapi.dto.RequestLoanResponseDTO;
+import co.com.harcalejo.loanapi.dto.CreateLoanRequestDTO;
+import co.com.harcalejo.loanapi.dto.CreateLoanResponseDTO;
 import co.com.harcalejo.loanapi.service.LoanService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import co.com.harcalejo.loanapi.util.ObjectToJson;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,27 +26,30 @@ public class LoanControllerTest {
     @MockBean
     private LoanService loanService;
 
+    private ObjectToJson objectToJson;
+
     @BeforeEach
     void setup() {
+        objectToJson = new ObjectToJson();
     }
 
     @Test
-    public void shouldCreateLoanFoNewTargetUser() throws Exception{
+    public void shouldCreateLoanForUser() throws Exception{
 
         //given
-        RequestLoanPayloadDTO requestLoanPayloadDTO =
-                new RequestLoanPayloadDTO(
+        CreateLoanRequestDTO createLoanRequestDTO =
+                new CreateLoanRequestDTO(
                         15021, 12, 1L);
 
         final String jsonPayload =
-                objectToJson(requestLoanPayloadDTO);
+                objectToJson.transform(createLoanRequestDTO);
 
-        RequestLoanResponseDTO requestLoanResponseDTO =
-                new RequestLoanResponseDTO(1L, 351.54);
+        CreateLoanResponseDTO createLoanResponseDTO =
+                new CreateLoanResponseDTO(1L, 351.54);
 
         //when
-        when(loanService.requestLoan(any()))
-                .thenReturn(requestLoanResponseDTO);
+        when(loanService.createLoan(any()))
+                .thenReturn(createLoanResponseDTO);
 
         //then
         this.mockMvc
@@ -62,13 +62,5 @@ public class LoanControllerTest {
                         .jsonPath("$.loanId", Matchers.equalTo(1)))
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.installment", Matchers.equalTo(351.54)));
-    }
-
-    private String objectToJson(Object object) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-        ObjectWriter objectWriter = mapper.writer().withDefaultPrettyPrinter();
-
-        return objectWriter.writeValueAsString(object);
     }
 }

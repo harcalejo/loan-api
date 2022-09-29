@@ -1,5 +1,6 @@
 package co.com.harcalejo.loanapi.service;
 
+import co.com.harcalejo.loanapi.dto.UserTargetDTO;
 import co.com.harcalejo.loanapi.entity.User;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.repository.UserRepository;
@@ -24,4 +25,13 @@ public interface UserService {
      *                       existente.
      */
     User getUser(Long userId) throws UserException;
+
+    /**
+     * Método encargado de realizar la carga de propiedades del negocio dependiendo
+     * del tipo de Objetivo(Target).
+     *
+     * @param userTarget identificador unico del Target
+     * @return un DTO con los datos cargados
+     */
+    UserTargetDTO loadUserTargetProperties(long userTarget);
 }
