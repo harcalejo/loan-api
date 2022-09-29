@@ -3,6 +3,7 @@ package co.com.harcalejo.loanapi.service;
 import co.com.harcalejo.loanapi.config.LoanProperties;
 import co.com.harcalejo.loanapi.dto.UserTargetDTO;
 import co.com.harcalejo.loanapi.entity.User;
+import co.com.harcalejo.loanapi.entity.UserTarget;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -54,36 +55,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserTargetDTO loadUserTargetProperties(long userTarget) {
-        UserTargetDTO userTargetDTO = new UserTargetDTO();
+        switch ((int) userTarget) {
+            case LoanProperties.NEW_TARGET:
+                return new UserTargetDTO(
+                        UserTarget.NEW,
+                        loanProperties.getNewRate(),
+                        loanProperties.getNewMaxAmount());
 
-        if(isTarget(userTarget, LoanProperties.NEW_TARGET)) {
-            userTargetDTO
-                    .setRate(loanProperties.getNewRate());
-            userTargetDTO
-                    .setMaxAmount(loanProperties.getNewMaxAmount());
-        } else if (isTarget(userTarget, LoanProperties.FREQUENT_TARGET)) {
-            userTargetDTO
-                    .setRate(loanProperties.getFrequentRate());
-            userTargetDTO
-                    .setMaxAmount(loanProperties.getFrequentMaxAmount());
-        } else if (isTarget(userTarget, LoanProperties.PREMIUM_TARGET)) {
-            userTargetDTO
-                    .setRate(loanProperties.getPremiumRate());
-            userTargetDTO
-                    .setMaxAmount(loanProperties.getPremiumMaxAmount());
+            case LoanProperties.FREQUENT_TARGET:
+                return new UserTargetDTO(
+                        UserTarget.FREQUENT,
+                        loanProperties.getFrequentRate(),
+                        loanProperties.getFrequentMaxAmount());
+
+            case LoanProperties.PREMIUM_TARGET:
+                return new UserTargetDTO(
+                        UserTarget.PREMIUM,
+                        loanProperties.getPremiumRate(),
+                        loanProperties.getPremiumMaxAmount());
+
+            default:
+                return null;
         }
-
-        return userTargetDTO;
-    }
-
-    /**
-     * Compara el id del target asignado al usuario con un el id del target enviado
-     *
-     * @param userTarget id del target asignado al Usuario
-     * @param target id del target que se desea comparar
-     * @return indica si los dos valores son iguales
-     */
-    private boolean isTarget(long userTarget, int target) {
-        return userTarget == target;
     }
 }

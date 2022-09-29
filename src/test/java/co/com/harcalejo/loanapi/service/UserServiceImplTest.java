@@ -1,8 +1,10 @@
 package co.com.harcalejo.loanapi.service;
 
 import co.com.harcalejo.loanapi.config.LoanProperties;
+import co.com.harcalejo.loanapi.dto.UserTargetDTO;
 import co.com.harcalejo.loanapi.entity.Target;
 import co.com.harcalejo.loanapi.entity.User;
+import co.com.harcalejo.loanapi.entity.UserTarget;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,11 +74,23 @@ class UserServiceImplTest {
     }
 
     @Test
-    void shouldLoadUserTargetProperties() {
+    void shouldLoadUserNewTargetProperties() {
         //given
+        Target newTarget = new Target();
+        newTarget.setId(1L);
+        newTarget.setName("NEW");
+
+        UserTargetDTO userTargetDTO = new UserTargetDTO(UserTarget.NEW,
+                0.15, 500000.0);
 
         //when
+        when(loanProperties.getNewRate())
+                .thenReturn(0.15);
+        when(loanProperties.getNewMaxAmount())
+                .thenReturn(500000.0);
 
         //then
+        assertThat(userService.loadUserTargetProperties(newTarget.getId()))
+                .isEqualTo(userTargetDTO);
     }
 }

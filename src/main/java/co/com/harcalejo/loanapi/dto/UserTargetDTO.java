@@ -1,10 +1,7 @@
 package co.com.harcalejo.loanapi.dto;
 
 import co.com.harcalejo.loanapi.entity.UserTarget;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 /**
@@ -16,6 +13,7 @@ import lombok.Setter;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Setter
 @Getter
 public class UserTargetDTO {
