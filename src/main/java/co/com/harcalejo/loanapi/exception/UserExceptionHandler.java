@@ -10,6 +10,13 @@ import java.time.LocalDate;
 @RestControllerAdvice
 public class UserExceptionHandler {
 
+    /**
+     *
+     * @param userException excepcion generada que ha sido atrapada
+     *                      por el manejador
+     * @return objeto que permite presentar al cliente una respuesta
+     * resumida al preentarse una excepcion en el sistema
+     */
     @ExceptionHandler(value = UserException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleUserException(UserException userException) {
@@ -17,5 +24,14 @@ public class UserExceptionHandler {
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDate.now(),
                 userException.getMessage());
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorMessage handleException(Exception exception) {
+        return new ErrorMessage(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                LocalDate.now(),
+                exception.getMessage());
     }
 }
