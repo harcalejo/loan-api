@@ -89,7 +89,7 @@ public class LoanServiceImpl implements LoanService {
         loanFromPayload.setInstallment(
                 calculationService
                         .calculateLoanInstallment(loanFromPayload));
-        
+
         return loanRepository.save(loanFromPayload);
     }
 
