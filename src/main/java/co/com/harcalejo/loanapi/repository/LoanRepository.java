@@ -1,6 +1,8 @@
 package co.com.harcalejo.loanapi.repository;
 
 import co.com.harcalejo.loanapi.entity.Loan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -25,6 +27,17 @@ import java.util.List;
  */
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Long> {
-    List<Loan> findByIdAndCreationDateBetween(Long id,
-            LocalDate start, LocalDate end);
+
+    /**
+     * Permite la consulta de prestamos usando como filtro un rango de fecha
+     *
+     * @param start rango inferior del periodo de consulta
+     * @param end rango superior del periodo de consulta
+     * @param pageable objeto del framework que nos ayuda a soportar la
+     *                 paginacion de registros. {@link Pageable}
+     * @return sublista de prestamos soportada por el framework para la
+     * paginacion. {@link Page}
+     */
+    Page<Loan> findByCreationDateBetween(
+            LocalDate start, LocalDate end, Pageable pageable);
 }
