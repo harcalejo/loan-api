@@ -10,7 +10,6 @@ import co.com.harcalejo.loanapi.repository.LoanRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  * La clase {@code LoanServiceImpl} es la implementación de la interfaz
@@ -107,19 +106,4 @@ public class LoanServiceImpl implements LoanService {
         return userTargetDTO.getMaxAmount() <
                 createLoanRequestDTO.getAmount();
     }
-
-    /**
-     * Consulta los préstamos solicitados el último año por el usuario
-     *
-     * @return Listado de préstamos
-     */
-    private List<Loan> getLoansFromLastYear(User user) {
-        LocalDate currentDate = LocalDate.now();
-        LocalDate lastYear = currentDate.minusYears(1);
-
-        return loanRepository
-                .findByIdAndCreationDateBetween(user.getId(), currentDate, lastYear);
-
-    }
-
 }
