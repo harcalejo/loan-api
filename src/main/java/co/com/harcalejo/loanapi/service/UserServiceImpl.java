@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUser(Long userId) throws UserException {
+    public User getUser(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         user.orElseThrow(() -> new UserException(
                 "El usuario con Id " + userId + ", no existe"));
