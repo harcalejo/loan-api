@@ -7,16 +7,20 @@ import co.com.harcalejo.loanapi.entity.Loan;
 import co.com.harcalejo.loanapi.entity.Target;
 import co.com.harcalejo.loanapi.entity.User;
 import co.com.harcalejo.loanapi.entity.UserTarget;
-import co.com.harcalejo.loanapi.exception.ErrorMessage;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.repository.LoanRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -33,11 +37,26 @@ class LoanServiceImplTest {
     @MockBean
     CalculationService calculationService;
     LoanService loanService;
+    private User userNew;
+    private UserTargetDTO newUserTargetDTO;
 
     @BeforeEach
     void setUp() {
         loanService = new LoanServiceImpl(
                 loanRepository, userService, calculationService);
+
+        Target targetNew = new Target();
+        targetNew.setId(1L);
+        targetNew.setName(UserTarget.NEW.getValue());
+
+        userNew = new User();
+        userNew.setTarget(targetNew);
+        userNew.setId(1L);
+
+        newUserTargetDTO = new UserTargetDTO();
+        newUserTargetDTO.setMaxAmount(500000);
+        newUserTargetDTO.setRate(0.15);
+        newUserTargetDTO.setUserTarget(UserTarget.NEW);
     }
 
     @Test
@@ -46,19 +65,6 @@ class LoanServiceImplTest {
         //given
         CreateLoanRequestDTO createLoanRequestDTO = new CreateLoanRequestDTO(
                 10000.0, 12, 1L);
-
-        Target targetNew = new Target();
-        targetNew.setId(1L);
-        targetNew.setName("NEW");
-
-        User userNew = new User();
-        userNew.setTarget(targetNew);
-        userNew.setId(1L);
-
-        UserTargetDTO newUserTargetDTO = new UserTargetDTO();
-        newUserTargetDTO.setMaxAmount(500000);
-        newUserTargetDTO.setRate(0.15);
-        newUserTargetDTO.setUserTarget(UserTarget.NEW);
 
         CreateLoanResponseDTO createLoanResponseDTO = new CreateLoanResponseDTO();
         createLoanResponseDTO.setLoanId(1L);
@@ -92,23 +98,10 @@ class LoanServiceImplTest {
         CreateLoanRequestDTO createLoanRequestDTO = new CreateLoanRequestDTO(
                 500001.0, 12, 1L);
 
-        Target targetNew = new Target();
-        targetNew.setId(1L);
-        targetNew.setName("NEW");
-
-        User userNew = new User();
-        userNew.setTarget(targetNew);
-        userNew.setId(1L);
-
         UserTargetDTO newUserTargetDTO = new UserTargetDTO();
         newUserTargetDTO.setMaxAmount(500000);
         newUserTargetDTO.setRate(0.15);
         newUserTargetDTO.setUserTarget(UserTarget.NEW);
-
-        ErrorMessage errorMessage = new ErrorMessage(
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDate.now(),
-                "El usuario supera el monto permitido");
 
         //when
         when(userService.getUser(createLoanRequestDTO.getUserId()))
@@ -120,5 +113,96 @@ class LoanServiceImplTest {
                 .isThrownBy(() -> loanService
                         .createLoan(createLoanRequestDTO))
                 .withMessage("El usuario supera el monto permitido");
+    }
+
+    @Test
+    void shouldReturnLoansWithDateBetweenStarDateAndEndDate() {
+        //given
+        int page = 0;
+        int size = 2;
+
+        LocalDate endDate =
+                LocalDate.now();
+
+        LocalDate startDate =
+                endDate.minusYears(1);
+
+        Loan loan_a = new Loan();
+        loan_a.setUser(userNew);
+        loan_a.setCreationDate(
+                LocalDate.now().minusMonths(4));
+        loan_a.setTerm(12);
+        loan_a.setAmount(300000.0);
+        loan_a.setId(1L);
+
+        Loan loan_b = new Loan();
+        loan_b.setUser(userNew);
+        loan_b.setCreationDate(
+                LocalDate.now()
+                        .minusMonths(8));
+        loan_b.setTerm(24);
+        loan_b.setAmount(10000.0);
+        loan_b.setId(2L);
+
+        List<Loan> loanList = new ArrayList<>();
+        loanList.add(loan_a);
+        loanList.add(loan_b);
+
+        Page<Loan> loanPage = new PageImpl<>(loanList);
+        Pageable paging = PageRequest.of(page, size);
+
+        //when
+        when(loanService.getLoansByRangeOfTime(
+                startDate,
+                endDate,
+                PageRequest.of(page,
+                        size)))
+                .thenReturn(loanPage);
+
+        //then
+        assertThat(loanService
+                .getLoansByRangeOfTime(startDate, endDate, paging)
+                .getSize())
+            .isEqualTo(size);
+        assertThat(loanService
+                .getLoansByRangeOfTime(startDate, endDate, paging)
+                .getContent().get(0).getCreationDate())
+            .isBetween(startDate, endDate);
+        assertThat(loanService
+                .getLoansByRangeOfTime(
+                        startDate, endDate, paging)
+                .getContent().get(1).getCreationDate())
+            .isBetween(startDate, endDate);
+    }
+
+    @Test
+    void shouldReturnEmptySubList() {
+        //given
+        int page = 0;
+        int size = 2;
+
+        LocalDate endDate =
+                LocalDate.now();
+
+        LocalDate startDate =
+                endDate.minusWeeks(1);
+
+        List<Loan> loanList = new ArrayList<>();
+
+        Page<Loan> loanPage = new PageImpl<>(loanList);
+        Pageable paging = PageRequest.of(page, size);
+
+        //when
+        when(loanService.getLoansByRangeOfTime(
+                startDate,
+                endDate,
+                PageRequest.of(page,
+                        size)))
+                .thenReturn(loanPage);
+
+        //then
+        assertThat(loanService
+                .getLoansByRangeOfTime(startDate, endDate, paging))
+            .isEmpty();
     }
 }
