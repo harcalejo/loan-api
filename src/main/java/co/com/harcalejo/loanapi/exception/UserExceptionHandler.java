@@ -26,6 +26,22 @@ public class UserExceptionHandler {
                 userException.getMessage());
     }
 
+    /**
+     *
+     * @param loanException excepcion generada que ha sido atrapada
+     *                      por el manejador.
+     * @return objeto que permite presentar al cliente una respuesta
+     * resumida al preentarse una excepcion en el sistema
+     */
+    @ExceptionHandler(value = LoanException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleLoanException(LoanException loanException) {
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDate.now(),
+                loanException.getMessage());
+    }
+
     @ExceptionHandler(value = Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorMessage handleException(Exception exception) {
