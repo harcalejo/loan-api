@@ -2,7 +2,7 @@ package co.com.harcalejo.loanapi.controller;
 
 import co.com.harcalejo.loanapi.dto.CreateLoanRequestDTO;
 import co.com.harcalejo.loanapi.dto.CreateLoanResponseDTO;
-import co.com.harcalejo.loanapi.entity.Loan;
+import co.com.harcalejo.loanapi.dto.LoanByRangeResponseDTO;
 import co.com.harcalejo.loanapi.service.LoanService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,16 +45,19 @@ public class LoanController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Loan>> getLoansByRangeOfTime(
+    public ResponseEntity<Page<LoanByRangeResponseDTO>> getLoansByRangeOfTime(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(defaultValue = DEFAULT_PAGE) int page,
             @RequestParam(defaultValue = DEFAULT_SIZE) int size) {
         Pageable paging = PageRequest.of(page, size);
 
-        return new ResponseEntity<>(loanService
+        Page<LoanByRangeResponseDTO> responseDTO = loanService
                 .getLoansByRangeOfTime(startDate,
-                        endDate, paging), HttpStatus.OK);
+                        endDate, paging).map(LoanByRangeResponseDTO::new);
+
+        return new ResponseEntity<>(
+                responseDTO, HttpStatus.OK);
     }
 
 }
