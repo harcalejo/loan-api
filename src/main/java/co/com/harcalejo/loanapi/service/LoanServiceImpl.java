@@ -5,6 +5,7 @@ import co.com.harcalejo.loanapi.dto.CreateLoanResponseDTO;
 import co.com.harcalejo.loanapi.dto.UserTargetDTO;
 import co.com.harcalejo.loanapi.entity.Loan;
 import co.com.harcalejo.loanapi.entity.User;
+import co.com.harcalejo.loanapi.exception.LoanException;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.repository.LoanRepository;
 import org.springframework.data.domain.Page;
@@ -12,11 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  * La clase {@code LoanServiceImpl} es la implementación de la interfaz
  * {@link LoanService}.
- *
+ * <p>
  * Service - Anotación del framework Spring que permite definir el bean y
  * su prototipo.
  *
@@ -48,7 +50,10 @@ public class LoanServiceImpl implements LoanService {
      * @param userService        dependencia del servicio de Usuarios
      * @param calculationService dependecia del servicio de Cálculos
      */
-    public LoanServiceImpl(LoanRepository loanRepository, UserService userService, CalculationService calculationService) {
+    public LoanServiceImpl(LoanRepository loanRepository,
+                           UserService userService,
+                           CalculationService calculationService) {
+
         this.loanRepository = loanRepository;
         this.userService = userService;
         this.calculationService = calculationService;
@@ -65,7 +70,7 @@ public class LoanServiceImpl implements LoanService {
                         .loadUserTargetProperties(
                                 user.getTarget().getId());
 
-        if(isAmountGreaterThanMaxAmount(
+        if (isAmountGreaterThanMaxAmount(
                 createLoanRequestDTO, userTargetDTO)) {
             throw new UserException("El usuario supera el monto permitido");
         }
@@ -81,12 +86,22 @@ public class LoanServiceImpl implements LoanService {
                 starDate, endDate, pageable);
     }
 
+    @Override
+    public Loan getLoanById(Long id) {
+        Optional<Loan> loan =
+                loanRepository.findById(id);
+        loan.orElseThrow(
+                () -> new LoanException(
+                        "No existe un prestamo con el identificador: " + id));
+        return loan.get();
+    }
+
     /**
      * Complementa el objeto prestamo para ser retornado, usando los datos
      * involucrados durante el proceso de creacion.
      *
      * @param createLoanRequestDTO valores de la solicitud recibidos
-     * @param user usuario asociado a la solicitud
+     * @param user                 usuario asociado a la solicitud
      * @return objeto Prestamo complementado
      */
     private Loan buildLoanForResponse(
@@ -105,9 +120,9 @@ public class LoanServiceImpl implements LoanService {
      * Compara si el monto solicitado es mayor al maximo permitido
      *
      * @param createLoanRequestDTO atributos enviados en la solicitud del prestamo
-     *                              entre ellos el monto solicitado
-     * @param userTargetDTO valores cargados de las properties de negocio, donde se
-     *                      define el valor maximo permitido
+     *                             entre ellos el monto solicitado
+     * @param userTargetDTO        valores cargados de las properties de negocio, donde se
+     *                             define el valor maximo permitido
      * @return si el monto solicitidado es superior al permitido
      */
     private boolean isAmountGreaterThanMaxAmount(
