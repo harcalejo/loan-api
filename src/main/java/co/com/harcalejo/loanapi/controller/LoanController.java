@@ -2,7 +2,9 @@ package co.com.harcalejo.loanapi.controller;
 
 import co.com.harcalejo.loanapi.dto.CreateLoanRequestDTO;
 import co.com.harcalejo.loanapi.dto.CreateLoanResponseDTO;
+import co.com.harcalejo.loanapi.dto.LoanByIdResponseDTO;
 import co.com.harcalejo.loanapi.dto.LoanByRangeResponseDTO;
+import co.com.harcalejo.loanapi.entity.Loan;
 import co.com.harcalejo.loanapi.service.LoanService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -58,6 +60,13 @@ public class LoanController {
 
         return new ResponseEntity<>(
                 responseDTO, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "{id}")
+    public ResponseEntity<LoanByIdResponseDTO> getLoanById(@PathVariable Long id) {
+        return new ResponseEntity<>(
+                    new LoanByIdResponseDTO(loanService.getLoanById(id)),
+                HttpStatus.OK);
     }
 
 }

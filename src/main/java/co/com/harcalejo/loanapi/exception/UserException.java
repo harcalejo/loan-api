@@ -6,7 +6,7 @@ import lombok.Getter;
  * La clase {@code UserException} es el componente encagado de las excepciones
  * customizadas relacionadas con el Usuario.
  *
- * extends {@link Exception}
+ * extends {@link RuntimeException}
  *
  * @author Hugo Alejandro Rodriguez
  * @version 1.0.0

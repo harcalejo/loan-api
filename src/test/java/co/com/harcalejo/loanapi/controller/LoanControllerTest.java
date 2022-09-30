@@ -2,7 +2,6 @@ package co.com.harcalejo.loanapi.controller;
 
 import co.com.harcalejo.loanapi.dto.CreateLoanRequestDTO;
 import co.com.harcalejo.loanapi.dto.CreateLoanResponseDTO;
-import co.com.harcalejo.loanapi.dto.LoanByRangeResponseDTO;
 import co.com.harcalejo.loanapi.dto.UserTargetDTO;
 import co.com.harcalejo.loanapi.entity.Loan;
 import co.com.harcalejo.loanapi.entity.Target;
@@ -10,7 +9,6 @@ import co.com.harcalejo.loanapi.entity.User;
 import co.com.harcalejo.loanapi.entity.UserTarget;
 import co.com.harcalejo.loanapi.service.LoanService;
 import co.com.harcalejo.loanapi.util.ObjectToJson;
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,13 +19,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -50,10 +45,19 @@ public class LoanControllerTest {
     private LoanService loanService;
 
     private ObjectToJson objectToJson;
+    private User userNew;
 
     @BeforeEach
     void setup() {
         objectToJson = new ObjectToJson();
+
+        Target targetNew = new Target();
+        targetNew.setId(1L);
+        targetNew.setName(UserTarget.NEW.getValue());
+
+        userNew = new User();
+        userNew.setTarget(targetNew);
+        userNew.setId(1L);
     }
 
     @Test
@@ -96,14 +100,6 @@ public class LoanControllerTest {
         final int page = 0;
         final int size = 2;
         Pageable paging = PageRequest.of(page, size);
-
-        Target targetNew = new Target();
-        targetNew.setId(1L);
-        targetNew.setName(UserTarget.NEW.getValue());
-
-        User userNew = new User();
-        userNew.setTarget(targetNew);
-        userNew.setId(1L);
 
         UserTargetDTO newUserTargetDTO = new UserTargetDTO();
         newUserTargetDTO.setMaxAmount(500000);
@@ -150,5 +146,29 @@ public class LoanControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfElements").value(2));
+    }
+
+    @Test
+    void shouldReturnLoanById() throws Exception {
+        //given
+        Long loanId = 1L;
+
+        Loan loan = new Loan();
+        loan.setUser(userNew);
+        loan.setCreationDate(
+                LocalDate.now().minusMonths(4));
+        loan.setTerm(12);
+        loan.setAmount(300000.0);
+        loan.setId(loanId);
+
+        //when
+        when(loanService.getLoanById(loanId))
+                .thenReturn(loan);
+
+        //then
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.get("/api/loans/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
     }
 }

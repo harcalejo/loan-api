@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Optional;
 
 /**
  * La interface {@code LoanService} es el componente encargado de definir las
@@ -42,4 +42,13 @@ public interface LoanService {
      */
     Page<Loan> getLoansByRangeOfTime(
             LocalDate starDate, LocalDate endDate, Pageable pageable);
+
+    /**
+     * Permite obtener la informacion de un prestamo en particular, usando
+     * como criterio el identificador.
+     *
+     * @param id identificador unico del prestamo
+     * @return el prestamo correspondiente al identificador
+     */
+    Loan getLoanById(Long id);
 }
