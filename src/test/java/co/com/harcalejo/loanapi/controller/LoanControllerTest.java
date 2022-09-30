@@ -141,9 +141,9 @@ public class LoanControllerTest {
         //then
         this.mockMvc
                 .perform(MockMvcRequestBuilders.get("/api/loans")
-                        .param("startDate",
+                        .param("from",
                                 startDate.format(formatter))
-                        .param("endDate",
+                        .param("to",
                                 endDate.format(formatter))
                         .param("page", "0")
                         .param("size", "2"))

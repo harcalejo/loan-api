@@ -46,15 +46,15 @@ public class LoanController {
 
     @GetMapping
     public ResponseEntity<Page<LoanByRangeResponseDTO>> getLoansByRangeOfTime(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
             @RequestParam(defaultValue = DEFAULT_PAGE) int page,
             @RequestParam(defaultValue = DEFAULT_SIZE) int size) {
         Pageable paging = PageRequest.of(page, size);
 
         Page<LoanByRangeResponseDTO> responseDTO = loanService
-                .getLoansByRangeOfTime(startDate,
-                        endDate, paging).map(LoanByRangeResponseDTO::new);
+                .getLoansByRangeOfTime(from,
+                        to, paging).map(LoanByRangeResponseDTO::new);
 
         return new ResponseEntity<>(
                 responseDTO, HttpStatus.OK);
