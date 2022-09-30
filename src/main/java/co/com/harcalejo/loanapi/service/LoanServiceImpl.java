@@ -7,6 +7,8 @@ import co.com.harcalejo.loanapi.entity.Loan;
 import co.com.harcalejo.loanapi.entity.User;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.repository.LoanRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -70,6 +72,13 @@ public class LoanServiceImpl implements LoanService {
 
         return new CreateLoanResponseDTO(
                 buildLoanForResponse(createLoanRequestDTO, user));
+    }
+
+    @Override
+    public Page<Loan> getLoansByRangeOfTime(
+            LocalDate starDate, LocalDate endDate, Pageable pageable) {
+        return loanRepository.findByCreationDateBetween(
+                starDate, endDate, pageable);
     }
 
     /**
