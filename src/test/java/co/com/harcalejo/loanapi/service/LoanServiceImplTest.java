@@ -7,6 +7,7 @@ import co.com.harcalejo.loanapi.entity.Loan;
 import co.com.harcalejo.loanapi.entity.Target;
 import co.com.harcalejo.loanapi.entity.User;
 import co.com.harcalejo.loanapi.entity.UserTarget;
+import co.com.harcalejo.loanapi.exception.LoanException;
 import co.com.harcalejo.loanapi.exception.UserException;
 import co.com.harcalejo.loanapi.repository.LoanRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -204,5 +206,45 @@ class LoanServiceImplTest {
         assertThat(loanService
                 .getLoansByRangeOfTime(startDate, endDate, paging))
             .isEmpty();
+    }
+
+    @Test
+    void shouldReturnLoanById() {
+        //given
+        Long loanId = 1L;
+        Loan loan = new Loan();
+        loan.setUser(userNew);
+        loan.setCreationDate(
+                LocalDate.now().minusMonths(4));
+        loan.setTerm(12);
+        loan.setAmount(300000.0);
+        loan.setId(loanId);
+        Optional<Loan> optionalLoan =
+                Optional.of(loan);
+
+        //when
+        when(loanRepository.findById(loanId))
+                .thenReturn(optionalLoan);
+
+        //then
+        assertThat(loanService.getLoanById(loanId))
+                .isEqualTo(loan);
+    }
+
+    @Test
+    void shouldFailLoanIdDoesNotExist() {
+        //given
+        Long loanId = 560L;
+        Optional<Loan> emptyOptional = Optional.empty();
+
+        //when
+        when(loanRepository.findById(loanId))
+                .thenReturn(emptyOptional);
+
+        //then
+        assertThatExceptionOfType(LoanException.class)
+                .isThrownBy(() -> loanService
+                        .getLoanById(loanId))
+                .withMessage("No existe un prestamo con el identificador: " + loanId);
     }
 }
