@@ -2,10 +2,11 @@
 
 Loan API hace parte del proyecto challenge para emitir fácilmente nuevos préstamos a los usuarios y averiguar cuál es el valor y el volumen de la deuda pendiente.
 
-<br>
+<br/>
+
 # Features
-** Solicitud de prestamo
-** Listado de prestamos
+* Solicitud de prestamo
+* List-ado de prestamos
 
 # Solucion
 ![Loan HLD](resources/LoanAPIHLD.png)
@@ -20,3 +21,10 @@ En esta capa ubicamos la logicia especializada de negocio, de esta forma mantene
 
 ## Domain
 En esta capa ubicamos los componentes relacionados al dominio de datos y la interaccion con la base de datos para soportar la logica de negocio.
+
+# Tools
+* ## Framework Spring Boot
+  * ### spring-boot-starter-web
+  * ### spring-boot-starter-data-jpa
+  * ### lombok
+  * ### spring-boot-starter-test
