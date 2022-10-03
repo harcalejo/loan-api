@@ -39,8 +39,9 @@ librerias de junit y mockito para la implementacion de las pruebas unitarias rea
 # Features
 ## Solicitud de Prestamo
 
+#### POST /api/loans
+###### Request body
 ```json
-POST /api/loans
 {
     "amount": 10000,
     "term": 12,
@@ -48,8 +49,63 @@ POST /api/loans
 }
 ```
 
+###### Response body
+```json
+{
+  "loanId": 301,
+  "installment": 159.4
+}
+```
+
 ## Listado de Prestamos
 
+#### GET /api/loans?to=2022-09-29&size=2&page=100&from=2021-01-01
+
+###### Response body
 ```json
-GET /api/loans?to=2022-09-29&size=2&page=100&from=2021-01-01
+{
+  "content": [
+    {
+      "id": 298,
+      "amount": 2279991.03,
+      "term": 21,
+      "user_id": 96,
+      "target": "FREQUENT",
+      "date": "2022-08-27"
+    },
+    {
+      "id": 299,
+      "amount": 2389367.42,
+      "term": 19,
+      "user_id": 2,
+      "target": "NEW",
+      "date": "2021-04-17"
+    }
+  ],
+  "pageable": {
+    "sort": {
+      "empty": true,
+      "sorted": false,
+      "unsorted": true
+    },
+    "offset": 200,
+    "pageNumber": 100,
+    "pageSize": 2,
+    "unpaged": false,
+    "paged": true
+  },
+  "last": false,
+  "totalElements": 203,
+  "totalPages": 102,
+  "size": 2,
+  "number": 100,
+  "sort": {
+    "empty": true,
+    "sorted": false,
+    "unsorted": true
+  },
+  "first": false,
+  "numberOfElements": 2,
+  "empty": false
+}
 ```
