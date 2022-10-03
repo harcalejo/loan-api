@@ -4,8 +4,8 @@ Loan API hace parte del proyecto challenge para emitir fácilmente nuevos prést
 
 <br>
 # Features
-* Solicitud de prestamo
-* Listado de prestamos
+** Solicitud de prestamo
+** Listado de prestamos
 
 # Solucion
 ![Loan HLD](resources/LoanAPIHLD.png)
