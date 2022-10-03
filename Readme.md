@@ -4,10 +4,6 @@ Loan API hace parte del proyecto challenge para emitir fácilmente nuevos prést
 
 <br/>
 
-# Features
-* Solicitud de prestamo
-* List-ado de prestamos
-
 # Solucion
 ![Loan HLD](resources/LoanAPIHLD.png)
 
@@ -39,3 +35,21 @@ consultas prediseñadas para reducir la complejidad en la implementacion.
 Lombok por su parte es una libreria que nos ayuda con el clean code, reduciendo la cantidad de lineas de codigo 
 repetitivas que escribimos en algunos componentes. Por ultimo pero no menos importante, starter-test nos aporta las 
 librerias de junit y mockito para la implementacion de las pruebas unitarias realizadas.
+
+# Features
+## Solicitud de Prestamo
+
+```json
+POST /api/loans
+{
+    "amount": 10000,
+    "term": 12,
+    "userId": 1
+}
+```
+
+## Listado de Prestamos
+
+```json
+GET /api/loans?to=2022-09-29&size=2&page=100&from=2021-01-01
+```
