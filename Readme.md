@@ -117,8 +117,42 @@ Para la instalacion debemos tener en cuenta que esta API hace parte de una soluc
 El directorio [docker-compose](docker-compose) contiene la siguiente jerarquia:
 
 * #### docker-compose
- * ##### Framework Spring Boot
-  * ###### spring-boot-starter-web
-  * ###### spring-boot-starter-data-jpa
-  * ###### lombok
-  * ###### spring-boot-starter-test
+  * ##### docker-compose.yml
+  * ##### debt
+    * ###### Dockerfile
+    * ###### debt-api-0.0.1-SNAPSHOT.jar
+  * ##### loan
+    * ###### Dockerfile
+    * ###### loan-api-0.0.1-SNAPSHOT.jar 
+  * ##### payment
+    * ###### Dockerfile
+    * ###### payment-api-0.0.1-SNAPSHOT.jar
+
+Cada uno de los Dockerfile contiene la configuracion basica para la creacion de las imagenes de cada una de las API Rest.
+
+```dockerfile
+FROM openjdk:11
+COPY debt-api-0.0.1-SNAPSHOT.jar /
+CMD ["java", "-jar", "debt-api-0.0.1-SNAPSHOT.jar"]
+```
+
+Para ejecutar el proyecto se deben generar los artifactos .jar de cada uno de los proyectos y agregarlos en su directorio
+correspondiente. Para generar cada uno de los artefactos, nos ubicamos en la raiz del proyecto y ejecutamos los comandos
+
+
+
+```shell
+mvn clean
+mvn install
+```
+
+Una vez tenemos los archivos generados y ubicados en el directorio correspondiente, nos aseguramos que cada Dockerfile
+tenga el nombre correcto del archivo en la linea de COPY y CMD. De esta forma podemos ubicarnos en la raiz donde se
+encuentra el archivo docker-compose.yml y ejecutamos:
+
+```shell
+docker compose up
+```
+
+
+
