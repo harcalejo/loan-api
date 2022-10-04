@@ -139,7 +139,8 @@ CMD ["java", "-jar", "debt-api-0.0.1-SNAPSHOT.jar"]
 Para ejecutar el proyecto se deben generar los artifactos .jar de cada uno de los proyectos y agregarlos en su directorio
 correspondiente. Para generar cada uno de los artefactos, nos ubicamos en la raiz del proyecto y ejecutamos los comandos
 
-
+> Repositorio Payment-API [click here](https://github.com/harcalejo/payment-api).
+> Repositorio Debt-API [click here](https://github.com/harcalejo/debt-api).
 
 ```shell
 mvn clean
@@ -153,6 +154,8 @@ encuentra el archivo docker-compose.yml y ejecutamos:
 ```shell
 docker compose up
 ```
+
+Con el fin de realizar pruebas sobre los endpoint se incluyo un PostManCollection en el directorio [resources](resources)
 
 
 

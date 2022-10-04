@@ -1,0 +1,188 @@
+{
+	"info": {
+		"_postman_id": "25c24f7b-c12e-48c3-bcf2-9e3be42d7f31",
+		"name": "LoanAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6021057"
+	},
+	"item": [
+		{
+			"name": "CreateLoan",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 10000,\r\n    \"term\": 12,\r\n    \"userId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/loans",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"loans"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetLoansByDateBetween",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/loans?startDate=2021-01-01&endDate=2022-09-29&size=2&page=100",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"loans"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2021-01-01"
+						},
+						{
+							"key": "endDate",
+							"value": "2022-09-29"
+						},
+						{
+							"key": "size",
+							"value": "2"
+						},
+						{
+							"key": "page",
+							"value": "100"
+						},
+						{
+							"key": null,
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetLoanById",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "GetDebtLoan",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8085/debts/loan/1?before=2021-12-31",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"debts",
+						"loan",
+						"1"
+					],
+					"query": [
+						{
+							"key": "before",
+							"value": "2021-12-31"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPaymentsLoanById",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "RegisterPayment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 5000.00\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8086/payments/loan/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8086",
+					"path": [
+						"payments",
+						"loan",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPaymentLoansByIdAndRegisterDateBefore",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8086/payments/loan/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8086",
+					"path": [
+						"payments",
+						"loan",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
