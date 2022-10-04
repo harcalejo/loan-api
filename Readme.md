@@ -114,4 +114,11 @@ librerias de junit y mockito para la implementacion de las pruebas unitarias rea
 Para la instalacion debemos tener en cuenta que esta API hace parte de una solucion compuesta, para centralizar esta solucion he decidio detallar aqui la distribucion y la forma de ejecutar todos los projectos juntos.
 
 ## docker-compose
-El directorio docker compose[docker-compose](docker-compose)
+El directorio [docker-compose](docker-compose) contiene la siguiente jerarquia:
+
+* #### docker-compose
+ * ##### Framework Spring Boot
+  * ###### spring-boot-starter-web
+  * ###### spring-boot-starter-data-jpa
+  * ###### lombok
+  * ###### spring-boot-starter-test
