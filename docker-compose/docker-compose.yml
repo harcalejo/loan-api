@@ -1,0 +1,22 @@
+version: '3'
+services:
+  loan-api:
+    container_name: loan-container
+    image: loan-api
+    build: loan/
+    ports:
+      - "8080:8080"
+
+  debt-api:
+    container_name: debt-container
+    image: debt-api
+    build: debt/
+    ports:
+      - "8085:8085"
+
+  payment-api:
+    container_name: payment-container
+    image: payment-api
+    build: payment/
+    ports:
+      - "8086:8086"
