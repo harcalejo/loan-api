@@ -38,6 +38,7 @@ librerias de junit y mockito para la implementacion de las pruebas unitarias rea
 
 # Features
 ## Solicitud de Prestamo
+Crea una nueva solicitud de prestamo, teniendo en cuenta los limites por usuario target
 
 #### POST /api/loans
 ###### Request body
@@ -58,7 +59,7 @@ librerias de junit y mockito para la implementacion de las pruebas unitarias rea
 ```
 
 ## Listado de Prestamos
-
+Permite consultar todos los prestamos entre las fechas determinadas y permite paginar los registros.
 #### GET /api/loans?to=2022-09-29&size=2&page=100&from=2021-01-01
 
 ###### Response body
