@@ -34,3 +34,4 @@ build/
 /docker-compose/debt/debt-api-0.0.1-SNAPSHOT.jar
 /docker-compose/loan/loan-api-0.0.1-SNAPSHOT.jar
 /docker-compose/payment/payment-api-0.0.1-SNAPSHOT.jar
+/docker-compose/api-config-server/api-config-server-0.0.1-SNAPSHOT.jar

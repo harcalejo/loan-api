@@ -1,8 +1,11 @@
 spring:
+  application:
+    name: loan-api
   cloud:
     config:
+      profile: dev
       uri:
-        - http://localhost:8888
+        - http://api-config-server:8888
 
   datasource:
     url: jdbc:h2:mem:loan-api
@@ -17,7 +20,6 @@ spring:
       hibernate:
         format_sql: true
     defer-datasource-initialization: true
-
   h2:
     console:
       enabled: true
