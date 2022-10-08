@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: loan-api
+  cloud:
+    config:
+      profile: dev
+      uri:
+        - http://api-config-server:8888
+
+  datasource:
+    url: jdbc:h2:mem:loan-api
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
