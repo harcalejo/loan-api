@@ -3,7 +3,6 @@ package co.com.harcalejo.loanapi.config;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  * Bean de configuracion usado para el mapeo de constantes y carga de
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.PropertySource;
  * @version 1.0.0
  */
 @Configuration
-@PropertySource("classpath:loan.properties")
 @Getter
 public class LoanProperties {
 
