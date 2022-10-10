@@ -4,8 +4,12 @@ services:
     container_name: loan-container
     image: loan-api
     build: loan/
-    ports:
-      - "8080:8080"
+    depends_on:
+      - api-discovery
+      - api-config-server
+    restart: always
+    networks:
+      - 'challenge-network'
 
   debt-api:
     container_name: debt-container
@@ -13,6 +17,8 @@ services:
     build: debt/
     ports:
       - "8085:8085"
+    networks:
+      - 'challenge-network'
 
   payment-api:
     container_name: payment-container
@@ -20,6 +26,8 @@ services:
     build: payment/
     ports:
       - "8086:8086"
+    networks:
+      - 'challenge-network'
 
   api-config-server:
     container_name: api-config-container
@@ -27,3 +35,18 @@ services:
     build: api-config-server/
     ports:
       - "8888:8888"
+    networks:
+      - 'challenge-network'
+
+  api-discovery:
+    container_name: api-discovery-container
+    image: api-discovery
+    build: api-discovery/
+    ports:
+      - "8761:8761"
+    restart: always
+    networks:
+      - 'challenge-network'
+
+networks:
+  challenge-network:
